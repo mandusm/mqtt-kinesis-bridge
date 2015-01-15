@@ -17,7 +17,8 @@ from boto.kinesis.exceptions import ResourceNotFoundException
 #     aws_access_key_id = <your access key>
 #     aws_secret_access_key = <your secret key>
 
-kinesis = boto.connect_kinesis()
+#kinesis = boto.connect_kinesis()
+kinesis = boto.kinesis.connect_to_region("eu-west-1")
 
 
 def get_stream(stream_name):
@@ -101,8 +102,9 @@ class MQTTKinesisBridge(object):
         self.add_records(records=[msg.payload])
         self.put_all_records(partition_key=msg.topic)
 
-    def on_connect(self, mqttc, userdata, msg):
+    def on_connect(self, mqttc, userdata,flags, msg):
         rc = mqttc.subscribe(self.mqtt_topic_name, 0)
+	print('Connection Msg: '.format(msg))
         print('Subscribe topic: {0} RC: {1}'.format(self.mqtt_topic_name, rc))
 
 
